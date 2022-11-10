@@ -1,0 +1,9 @@
+2022-11-11 04:10:53 INFO _internal---- 127.0.0.1 - - [11/Nov/2022 04:10:53] "GET / HTTP/1.1" 200 -
+2022-11-11 04:10:54 INFO _internal---- 127.0.0.1 - - [11/Nov/2022 04:10:54] "GET /static/styles.css HTTP/1.1" 200 -
+2022-11-11 04:11:05 INFO _internal---- 127.0.0.1 - - [11/Nov/2022 04:11:05] "POST /predict HTTP/1.1" 200 -
+2022-11-11 04:11:05 INFO _internal---- 127.0.0.1 - - [11/Nov/2022 04:11:05] "[36mGET /static/styles.css HTTP/1.1[0m" 304 -
+2022-11-11 04:11:05 INFO _internal---- 127.0.0.1 - - [11/Nov/2022 04:11:05] "GET /static/not-spam.webp HTTP/1.1" 200 -
+2022-11-11 04:11:17 INFO _internal---- 127.0.0.1 - - [11/Nov/2022 04:11:17] "POST /predict HTTP/1.1" 200 -
+2022-11-11 04:11:18 INFO _internal---- 127.0.0.1 - - [11/Nov/2022 04:11:18] "[36mGET /static/styles.css HTTP/1.1[0m" 304 -
+2022-11-11 04:11:18 INFO _internal---- 127.0.0.1 - - [11/Nov/2022 04:11:18] "GET /static/spam.webp HTTP/1.1" 200 -
+2022-11-11 04:14:06 INFO _internal----  * Detected change in 'D:\\Docs\\Documents\\Spam_Ham_Classifier_Final\\Spam_Ham_Classifier\\Database_Operations.py', reloading

@@ -1,4 +1,4 @@
-# This is just a stand alone module, to show what has been done to the actual dataset, how it was cleaned.
+# This is just a stand alone module, to show what has been done to the actual dataset.
 # Note: Further changes will be made to the dataset, column names will be changed to suit the training process.
 # This module is no longer needed, only for reading purposes, please check the EDA jupyternotebook file for more details.
 

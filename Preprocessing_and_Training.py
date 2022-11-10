@@ -4,17 +4,19 @@ import pickle
 import pandas as pd
 import numpy as np
 import nltk
-import nltk
 import string
+import re
+from nltk.stem.porter import PorterStemmer
 nltk.download("punkt")
 import warnings
+nltk.download('stopwords')
 warnings.filterwarnings('ignore')
 from nltk.corpus import stopwords
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import GridSearchCV,train_test_split,StratifiedKFold,cross_val_score,learning_curve
+from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+import logging as log
 
 class preprocessing_and_training:
     """
@@ -35,100 +37,49 @@ class preprocessing_and_training:
                 Revision: None
 
                 """
+                df = pd.read_csv("dataset_spam.csv")
 
-                data = pd.read_csv('dataset_spam.csv', encoding='latin-1')
-                data = data.rename(columns={"sample_text" : "text", "output_str":"label"})
-
-                data = data.replace(['ham','spam'],[0, 1])
-
-
-                #remove the punctuations and stopwords
-                def text_process(text):
-
-                    text = text.translate(str.maketrans('', '', string.punctuation))
-                    text = [word for word in text.split() if word.lower() not in stopwords.words('english')]
-
-                    return " ".join(text)
-
-                data['text'] = data['text'].apply(text_process)
-
-                # Now, create a data frame from the processed data before moving to the next step.
-
-                text = pd.DataFrame(data['text'])
-                label = pd.DataFrame(data['label'])
-
-                # Counting how many times a word appears in the dataset
-
-                from collections import Counter
-
-                total_counts = Counter()
-                for i in range(len(text)):
-                    for word in text.values[i][0].split(" "):
-                        total_counts[word] += 1
-
-                # Sorting in decreasing order (Word with highest frequency appears first)
-                vocab = sorted(total_counts, key=total_counts.get, reverse=True)
-                print(vocab[:60])
-
-                # Mapping from words to index
-
-                vocab_size = len(vocab)
-                word2idx = {}
-                #print vocab_size
-                for i, word in enumerate(vocab):
-                    word2idx[word] = i
-
-
-                # Text to Vector
-                def text_to_vector(text):
-                    word_vector = np.zeros(vocab_size)
-                    for word in text.split(" "):
-                        if word2idx.get(word) is None:
-                            continue
-                        else:
-                            word_vector[word2idx.get(word)] += 1
-                    return np.array(word_vector)
-
-               # Convert all titles to vectors
-                word_vectors = np.zeros((len(text), len(vocab)), dtype=np.int_)
-                for i, (_, text_) in enumerate(text.iterrows()):
-                    word_vectors[i] = text_to_vector(text_[0])
-
-
-                #convert the text data into vectors
-                from sklearn.feature_extraction.text import TfidfVectorizer
-
-                vectorizer = TfidfVectorizer()
-                vectors = vectorizer.fit_transform(data['text'])
-                features = vectors
-                                
-                # saving to into cv.pkl file
-                pickle.dump(vectors, open('vectors.pkl', 'wb'))
-
-                #split the dataset into train and test set
-                X_train, X_test, y_train, y_test = train_test_split(features, data['label'], test_size=0.15, random_state=111)
-
-                mnb = MultinomialNB(alpha=0.2)
-
-                clfs = {'NB': mnb}
-
-                def train(clf, features, targets):
-                    clf.fit(features, targets)
-
-                def predict(clf, features):
-                    return (clf.predict(features))
+                # Removing all the punctuation, removing stopwords, performing stemming, lemmatization, and converting the text into vectors.
+                corpus = []
+                length = len(df)
+                for i in range(0,length):
+                    text = re.sub("[^a-zA-Z0-9]"," ",df["sample_text"][i])
+                    text = text.lower()
+                    text = text.split()
+                    pe = PorterStemmer()
+                    stopword = stopwords.words("english")
+                    text = [pe.stem(word) for word in text if not word in set(stopword)]
+                    text = " ".join(text)
+                    corpus.append(text)
                 
-                # Saving the machine learnign model
-                pickle.dump(mnb, open("spam_classifier_model.pkl", "wb"))
+                cv = CountVectorizer(max_features=35000)
+                X = cv.fit_transform(corpus).toarray()
 
-                pred_scores_word_vectors = []
-                for k,v in clfs.items():
-                    train(v, X_train, y_train)
-                    pred = predict(v, X_test)
-                    pred_scores_word_vectors.append((k, [accuracy_score(y_test , pred)]))
+                # Extracting dependent variable from the dataset
+                y = pd.get_dummies(df['output_str'])
+                y = y.iloc[:, 1].values
 
-                    return pred_scores_word_vectors
+                ## saving to into cv.pkl file
+                pickle_1 = pickle.dump(cv, open('cv.pkl', 'wb'))
+
+                # Splitting the training and test sets from the dataset in the ususal 80:20 ratio.
+                X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, random_state = 0)
+                
+                # Algorithm select and fitting the features and target columns.
+                classifier = MultinomialNB(alpha=0.3)
+                classifier.fit(X_train, y_train)
+                y_pred = classifier.predict(X_test)
+                y_pred
+
+                # Saving the model that will be responsible for the training at the end.
+                pikle_2 = pickle.dump(classifier, open("spam.pkl", "wb"))   
+
+                return pickle_1
+                return pickle_2           
 
     except Exception as e:
-        self.log.warning('An error has occurred: {}'.format(e))
+        log.warning('An error has occurred: {}'.format(e))
         raise Exception
+        
+#training = preprocessing_and_training('/config/workspace/dataset_spam.csv')
+#training.start()

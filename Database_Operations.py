@@ -56,7 +56,7 @@ class database_operations:
     def extracting_data(self):
         try:
             # Getting the training file ready.
-            dataset_path = '/config/workspace/Spam_Ham_Classifier/dataset_spam.csv'
+            dataset_path = 'dataset_spam.csv'
             training = open(dataset_path, 'w', encoding='utf8')
             training.truncate()
             write = csv.writer(training)
@@ -69,8 +69,8 @@ class database_operations:
                  write.writerow(tuple(row))
             
             training.close()
-            self.log.info('Operation Successful. {}'.format(main_train_data_path))
-            return main_train_data_path
+            self.log.info('Operation Successful. {}'.format(dataset_path))
+            return dataset_path
 
         except Exception as e:
             self.log.warning('An errorr has occurred : {}'.format(e))
