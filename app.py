@@ -30,4 +30,4 @@ def predict():
         pred = spam_classifier.predict(vect) ## predicting the class(1=spam,0=ham)
         return render_template('result.html',prediction=pred) ## returning result.html with prediction var value as class value(0,1)
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
+    app.run(debug=True)
