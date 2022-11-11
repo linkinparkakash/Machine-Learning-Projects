@@ -29,7 +29,7 @@ To preprocess the data, the sample_text was vectorized and then put to training.
 
 # Training
 
-The Naïve Bayes Multiple NOminal NB was used to train the model which gave around 98.68% accuracy.
+The Naïve Bayes Multiple Nominal NB was used to train the model which gave around 98.68% accuracy.
 
 # Model
 You can test it here - https://hamspamclassifiernew.herokuapp.com/
