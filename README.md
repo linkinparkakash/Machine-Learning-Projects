@@ -34,5 +34,5 @@ The Naïve Bayes Multiple Nominal NB was used to train the model which gave arou
 # Model
 You can test it here - https://hamspamclassifiernew.herokuapp.com/
 
-# Special Thanks to Anuj Vyas for these nice html templates. 
+Special Thanks to Anuj Vyas for these nice html templates. 
 
